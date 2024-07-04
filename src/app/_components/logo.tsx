@@ -1,6 +1,7 @@
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import LogoAnimated from "./logo-animated";
+import { NAVBAR_LINKS } from "@/lib/constats";
 
 export default function logo() {
   return (
@@ -8,7 +9,7 @@ export default function logo() {
       <div>
         <LogoAnimated type={"navbar"} />
       </div>
-      <Link href={"/"}>
+      <Link href={NAVBAR_LINKS.Homepage}>
         <h3 className="text-gradient text-2xl font-bold">{siteConfig.title}</h3>
       </Link>
     </div>

@@ -12,28 +12,16 @@ export type NavBarLink = {
 };
 
 export default function Navbar(): React.JSX.Element {
-  const navbarLinks: NavBarLink[] = [
-    {
-      title: "Homepage",
-      href: "/"
-    },
-    {
-      title: "Contact",
-      href: "/contact"
-    },
-    {
-      title: "Documentation",
-      href: "/docs"
-    }
-  ];
-
   return (
-    <nav className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 py-6 backdrop-blur-sm md:px-6">
+    <nav
+      role="navbar"
+      className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 py-6 backdrop-blur-sm md:px-6"
+    >
       <div className="hidden w-full items-center lg:flex">
         <Logo />
         <div className="flex items-center gap-x-3">
           <SearchCommand />
-          <NavbarMenu links={navbarLinks} />
+          <NavbarMenu />
         </div>
         <div className="ml-auto">
           <Icons />
@@ -45,7 +33,7 @@ export default function Navbar(): React.JSX.Element {
           <ModeToggle />
         </div>
         <div className="ml-auto">
-          <MobileMenu links={navbarLinks} />
+          <MobileMenu />
         </div>
       </div>
     </nav>

@@ -10,10 +10,9 @@ import HooksSidebarLinks from "../docs/_components/hooks-sidebar-links";
 import Divider from "./divider";
 import Icons from "./icons";
 import Logo from "./logo";
-import { type NavBarLink } from "./navbar";
 import NavbarMenu from "./navbar-menu";
 
-export default function MobileMenu({ links }: { links: NavBarLink[] }) {
+export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -41,7 +40,7 @@ export default function MobileMenu({ links }: { links: NavBarLink[] }) {
                 Menu
                 <EllipsisVertical className="ml-2 h-4 w-4" />
               </Divider>
-              <NavbarMenu links={links} />
+              <NavbarMenu />
               <Divider>
                 Documentation Hooks
                 <Atom className="ml-2 h-4 w-4" />
