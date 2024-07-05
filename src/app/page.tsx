@@ -10,7 +10,6 @@ function Index(): React.JSX.Element {
       <div className="flex flex-col gap-y-10">
         <RecentlyUsedHooks />
         <NewHooks />
-
         <PopularHooks />
       </div>
     </main>

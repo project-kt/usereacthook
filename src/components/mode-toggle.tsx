@@ -21,7 +21,7 @@ export function ModeToggle(): React.JSX.Element | undefined {
 
   if (hasMounted) {
     return (
-      <Button onClick={handleChamgeTheme} size={"icon"} variant={"ghost"}>
+      <Button onClick={handleChamgeTheme} size={"icon"} variant={"ghost"} aria-label="mode-toggle">
         {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
       </Button>
     );

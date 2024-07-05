@@ -8,11 +8,11 @@ export default function Icons() {
   return (
     <div className="flex items-center gap-x-2">
       <ModeToggle />
-      <Button variant="ghost" size={"icon"} asChild>
-        <Link href={siteConfig.links.github}>
+      <Link href={siteConfig.links.github} aria-label="github">
+        <Button variant="ghost" size={"icon"}>
           <Github className="text-main h-5 w-5" />
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </div>
   );
 }
