@@ -1,16 +1,16 @@
 "use client";
 
-import { addHookToCookies } from "@/lib/cookies";
 import { copyToClipboard } from "@/lib/utils";
-import { type Hook } from "@/server/db/schema";
 import axios from "axios";
 import { Atom, Check, Rabbit } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { type ReactHook } from "@/server/db/schema";
+import { fromBase64 } from "@/lib/base64";
 
-function HookCard({ hook }: { hook: Hook }) {
+function HookCard({ hook }: { hook: ReactHook }) {
   const handleIncrementClickCount = async () => {
     await axios.get(`${process.env.NEXT_PUBLIC_SITE_URL}/api/hook/statistics/incrementClickCount?hookId=${hook.id}`);
   };
@@ -18,12 +18,12 @@ function HookCard({ hook }: { hook: Hook }) {
   return (
     <Card className="hover:border-gradient group relative w-full">
       <CardHeader>
-        <CardTitle className="text-gradient mb-2">{hook.name}</CardTitle>
+        <CardTitle className="text-gradient mb-2">{hook.title}</CardTitle>
         <CardDescription className="line-clamp-2">{hook.description}</CardDescription>
       </CardHeader>
       <CardFooter className="flex flex-wrap">
         <Link
-          href={`/docs/${hook.name}`}
+          href={`/docs/${hook.title}`}
           className="text-gradient flex items-center"
           onClick={handleIncrementClickCount}
         >
@@ -38,29 +38,17 @@ function HookCard({ hook }: { hook: Hook }) {
 
 export default HookCard;
 
-const CardCopyAction = ({ hook }: { hook: Hook }): React.JSX.Element => {
+const CardCopyAction = ({ hook }: { hook: ReactHook }): React.JSX.Element => {
   const [fileContent, setFileContent] = React.useState<string | null>(null);
 
-  const fetchFileContent = async (fileSource: string) => {
-    try {
-      const response = await axios.get<string>(fileSource, {
-        responseType: "arraybuffer"
-      });
-      const decodedContent = Buffer.from(response.data, "base64").toString("utf-8");
-
-      setFileContent(decodedContent);
-      await copyToClipboard(decodedContent);
-    } catch (error) {
-      console.error("Error fetching file content:", error);
-      setFileContent(null);
-    }
+  const fetchFileContent = async (code: string) => {
+    const decodedContent = fromBase64(code);
+    await copyToClipboard(decodedContent);
   };
 
   const handleCopyHook = async () => {
-    await fetchFileContent(hook.source!);
-    await axios.get(`${process.env.NEXT_PUBLIC_SITE_URL}/api/hook/statistics/incrementCopyCount?hookId=${hook.id}`);
-
-    addHookToCookies(hook.id);
+    await fetchFileContent(hook.code);
+    // await axios.get(`${process.env.NEXT_PUBLIC_SITE_URL}/api/hook/statistics/incrementCopyCount?hookId=${hook.id}`);
 
     setTimeout(() => {
       setFileContent(null);

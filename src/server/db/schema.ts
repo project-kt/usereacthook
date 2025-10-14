@@ -1,8 +1,10 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { relations, sql } from "drizzle-orm";
-import { bigint, index, mysqlTableCreator, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { sql } from "drizzle-orm";
+import { bigint, mysqlTableCreator, serial, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import type z from "zod";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -12,43 +14,39 @@ import { bigint, index, mysqlTableCreator, timestamp, varchar } from "drizzle-or
  */
 export const createTable = mysqlTableCreator((name) => `${name}`);
 
-export const hooks = createTable(
-  "hooks",
-  {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-    name: varchar("name", { length: 256 }),
-    description: varchar("description", { length: 1024 }),
-    source: varchar("source", { length: 1024 }),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow()
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name)
-  })
-);
-
-export const hooksRelations = relations(hooks, ({ one }) => ({
-  hooksStatistics: one(hooksStatistics, {
-    fields: [hooks.id],
-    references: [hooksStatistics.hookId]
-  })
-}));
-
-export const hooksStatistics = createTable("hooks_statistics", {
+export const reactHooks = createTable("react_hooks", {
   id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-  hookId: bigint("hook_id", { mode: "number" }).references(() => hooks.id),
-  clickCount: bigint("click_count", { mode: "number" }).default(0),
-  copyCount: bigint("copy_count", { mode: "number" }).default(0),
-  usefullCount: bigint("usefull_count", { mode: "number" }).default(0),
-  uselessCount: bigint("useless_count", { mode: "number" }).default(0),
-  createdAt: timestamp("created_at")
+  title: varchar("title", { length: 255 }).notNull().unique(),
+  description: text("description"),
+  code: text("code").notNull(),
+  documentation: text("documentation").notNull(),
+  created_at: timestamp("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
 });
 
-export type Hook = typeof hooks.$inferSelect;
-export type HookInsert = typeof hooks.$inferInsert;
-export type HookStatistics = typeof hooksStatistics.$inferSelect;
-export type HooksStatisticsInsert = typeof hooksStatistics.$inferInsert;
+export const ReactHookSchema = createSelectSchema(reactHooks);
+export const ReactHookTitleOnlySchema = ReactHookSchema.pick({
+  title: true
+});
+export const NewReactHookSchema = createInsertSchema(reactHooks);
+
+export type ReactHook = z.infer<typeof ReactHookSchema>;
+export type ReactHookTitleOnly = z.infer<typeof ReactHookTitleOnlySchema>;
+export type NewReactHook = z.infer<typeof NewReactHookSchema>;
+
+export const reactionCounters = createTable("reaction_counters", {
+  id: serial("id").primaryKey(),
+  hook_id: bigint("hook_id", { mode: "number" })
+    .references(() => reactHooks.id, { onDelete: "cascade" })
+    .unique()
+    .notNull(),
+  likes: bigint("likes", { mode: "number" }).default(0).notNull(),
+  dislikes: bigint("dislikes", { mode: "number" }).default(0).notNull()
+});
+
+export const ReactionCounterSchema = createSelectSchema(reactionCounters);
+export const NewReactionCounterSchema = createInsertSchema(reactionCounters);
+
+export type ReactionCounter = z.infer<typeof ReactionCounterSchema>;
+export type NewReactionCounter = z.infer<typeof NewReactionCounterSchema>;
