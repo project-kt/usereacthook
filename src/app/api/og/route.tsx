@@ -6,7 +6,7 @@ export const runtime = "edge";
 
 const interBold = fetch(new URL("../../assets/fonts/Inter-Bold.ttf", import.meta.url)).then((res) => res.arrayBuffer());
 
-export async function GET(req: NextRequest) {
+export const GET = async (req: NextRequest) => {
   try {
     const fontBold = await interBold;
 
@@ -62,4 +62,4 @@ export async function GET(req: NextRequest) {
     console.error(error);
     return new Response("Failed to generate image", { status: 500 });
   }
-}
+};

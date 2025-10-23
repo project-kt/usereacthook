@@ -1,11 +1,5 @@
-import { hooks } from "#site/content";
 import { siteConfig } from "@/config/site";
 import { type MetadataRoute } from "next";
-
-const postsSitemap: MetadataRoute.Sitemap = hooks.map((hook) => ({
-  url: `${process.env.HOST}/docs/${hook.slug}`,
-  lastModified: hook.date
-}));
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -14,7 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1
-    },
-    ...postsSitemap
+    }
   ];
 }

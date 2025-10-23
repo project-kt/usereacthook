@@ -1,4 +1,3 @@
-import "@/styles/mdx.css";
 import React from "react";
 
 type HookPageProps = {

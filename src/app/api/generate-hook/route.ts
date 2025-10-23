@@ -12,6 +12,8 @@ import {
 } from "./hook.service";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async () => {
   const result = await getHookTitles(db)
     .map(buildPrompt)
